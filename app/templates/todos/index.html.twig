@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Todos</h1>
+
+	<table>
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Name</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for todo in todos %}
+				<tr>
+					<td>{{ todo.id }}</td>
+					<td>{{ todo.name }}</td>
+					<td>
+						<a href="{{ path('app_delete_todo', {'id': todo.id}) }}" onclick="return confirm('Are you sure you want to delete this todo?')">Delete</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+    
+	<br><a href="{{ path('app_new_todo') }}">Ajouter un todo</a>
+{% endblock %}
