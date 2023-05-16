@@ -1,8 +1,9 @@
 version: '3'
 services:
   web:
-    image: nginx:latest
-    container_name: container_app
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     ports:
       - 8080:80
     volumes:
@@ -13,18 +14,22 @@ services:
       - postgres
 
   php:
-    image: php:8.1-fpm
-    container_name: container_php
+    build:
+      context: ./php
+      dockerfile: Dockerfile
     volumes:
       - ./app:/var/www/app
+    ports:
+      - 9000:9000
     depends_on:
       - postgres
 
   postgres:
     build:
-      context: .
-      dockerfile: Dockerfile.postgresql
-    container_name: container_postgres
+      context: ./postgres
+      dockerfile: Dockerfile
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     environment:
@@ -34,8 +39,8 @@ services:
 
   adminer:
     build:
-      context: .
-      dockerfile: Dockerfile.adminer
+      context: ./adminer
+      dockerfile: Dockerfile
     container_name: container_adminer
     ports:
       - 8081:8080
@@ -44,10 +49,13 @@ services:
 
   composer:
     build:
-      context: .
-      dockerfile: Dockerfile.composer
+      context: ./composer
+      dockerfile: Dockerfile
     container_name: container_composer
     entrypoint: composer install
     volumes:
       - ./app:/app
     working_dir: /app
+
+volumes:
+  db-data:
